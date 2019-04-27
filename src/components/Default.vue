@@ -12,15 +12,15 @@
 
 		    	<div class="actions">
 		    		<div class="actions__title">Атаки</div>
-					<button class="button default-color">Обычный удар</button>
-					<button class="button combo-color">Комбо</button>
-					<button class="button magic-color">Заклинание</button>
-					<button class="button heal-color">+20HP</button>
+					<button class="button default-color" @click="gameAction('monster')">Обычный удар</button>
+					<button class="button combo-color" @click="gameAction('monster', 'combo')">Комбо</button>
+					<button class="button magic-color" @click="gameAction('monster', 'magic')">Заклинание</button>
+					<button class="button heal-color" @click="gameAction('monster', 'heal')">+20HP</button>
 				</div>
 		    </div>
 		    <div class="player">
 		    	<div class="player__name">Monster</div>
-		    	<div class="player__line"><div class="player__hp"></div><span>Здоровье</span></div>
+		    	<div class="player__line"><div class="player__hp" :style="{ width: monster.hp + '%' }"></div><span>Здоровье</span></div>
 		    	<div class="player__line"><div class="player__mp"></div><span>Мана</span></div>
 		    </div>
 		</div>
@@ -33,10 +33,44 @@ export default {
   name: 'Default',
   data () {
     return {
-      msg: 'default component'
+      player: {
+      	hp: 100,
+      	mp: 100,
+      	win: false
+      },
+      monster: {
+      	hp: 100,
+      	mp: 100,
+      	win: false
+      }
     }
+  },
+  methods: {
+  	gameAction(player, variant = 'default') {
+  		let attackParams;
+
+  		switch (variant) {
+  			case 'heal':
+  				attackParams = [-12, -16];
+  			case 'magic':
+  				attackParams = [10, 15];
+  			case 'combo':
+  				attackParams = [1, 5];
+  			case 'default':
+  				attackParams = [5, 10];
+  		}
+
+		this[player].hp -= generateRandom(...attackParams);
+  	}
   }
 }
+
+// рандомная генерация атак/лечения
+function generateRandom(min = 1, max = 5) {
+	console.log(min, max);
+	return Math.floor(Math.random() * (max - min) + min);
+}
+	
 </script>
 
 <style lang="scss">
