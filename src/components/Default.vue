@@ -7,21 +7,21 @@
   		<div class="players">
 		    <div class="player">
 		    	<div class="player__name">You</div>
-		    	<div class="player__line"><div class="player__hp"></div><span>Здоровье</span></div>
-		    	<div class="player__line"><div class="player__mp"></div><span>Мана</span></div>
+		    	<div class="player__line"><div class="player__hp" :style="{ width: player.hp + '%' }"></div><span>Здоровье</span></div>
+		    	<div class="player__line"><div class="player__mp" :style="{ width: player.mp + '%' }"></div><span>Мана</span></div>
 
 		    	<div class="actions">
 		    		<div class="actions__title">Атаки</div>
-					<button class="button default-color" @click="gameAction('monster')">Обычный удар</button>
-					<button class="button combo-color" @click="gameAction('monster', 'combo')">Комбо</button>
-					<button class="button magic-color" @click="gameAction('monster', 'magic')">Заклинание</button>
-					<button class="button heal-color" @click="gameAction('monster', 'heal')">+20HP</button>
+					<button class="button default-color" @click="gameAction('default')">Обычный удар</button>
+					<button class="button combo-color" @click="gameAction('combo')">Комбо</button>
+					<button class="button magic-color" @click="gameAction('magic')">Заклинание</button>
+					<button class="button heal-color" @click="gameAction('heal', 'player')">+20HP</button>
 				</div>
 		    </div>
 		    <div class="player">
 		    	<div class="player__name">Monster</div>
 		    	<div class="player__line"><div class="player__hp" :style="{ width: monster.hp + '%' }"></div><span>Здоровье</span></div>
-		    	<div class="player__line"><div class="player__mp"></div><span>Мана</span></div>
+		    	<!-- <div class="player__line"><div class="player__mp" :style="{ width: monster.mp + '%' }"></div><span>Мана</span></div> -->
 		    </div>
 		</div>
 		
@@ -33,42 +33,92 @@ export default {
   name: 'Default',
   data () {
     return {
-      player: {
-      	hp: 100,
-      	mp: 100,
-      	win: false
-      },
-      monster: {
-      	hp: 100,
-      	mp: 100,
-      	win: false
-      }
+    	attacks: {
+    		default: generateRandom(-4,-1),
+    		combo: generateRandom(-10,-5),
+    		magic: generateRandom(-14,-10),
+    		heal: generateRandom(4,12)
+    	},
+      	player: {
+	      	hp: 100,
+	      	mp: 100,
+
+      	},
+      	monster: {
+	      	hp: 100,
+      	},
+      	info: {
+      		winner: null
+      	}
     }
   },
+  computed: {
+
+  },
   methods: {
-  	gameAction(player, variant = 'default') {
-  		let attackParams;
+  	// атака / лечение указанного персонажа
+  	gameAction(variant = 'default', player = 'monster') {
+  		let newAction = this.attacks[variant].next().value;
 
-  		switch (variant) {
-  			case 'heal':
-  				attackParams = [-12, -16];
-  			case 'magic':
-  				attackParams = [10, 15];
-  			case 'combo':
-  				attackParams = [1, 5];
-  			case 'default':
-  				attackParams = [5, 10];
-  		}
+		if(variant == 'default' || variant == 'combo') {
+			this[player].hp = getValidAction(this[player].hp, newAction);
+		}
 
-		this[player].hp -= generateRandom(...attackParams);
+		if(variant == 'magic' && this[getOtherPlayer(player)].mp >= 44) { // атака magic отнимает 44 маны:
+			this[getOtherPlayer(player)].mp -= 44; 
+		}
+		if(variant == 'heal' && this[player].mp >= 39) { // heal отнимает 39 маны:
+			this[player].mp -= 39; 
+		}
+
+		// ответная атака монстра
+		// this.player.hp = getValidAction(this.player.hp, -4);
+
+		
+		// если у кого-либо hp == 0, игра оконечна, выделить победителя и проигравшего
+		// магические атаки только если маны хватает
+		// монстр бьет рандомно из существующих атак после каждого действия (можно настраивать)
+		// после активации комбо-атаки ее нельзя юзать еще 2 хода
+		// N последних действий записывается в лог и выводится на экран
+		// после окончания игры предложить перейти на гитхаб или попробовать снова
+		// русская и английская версии
+		// возможность написать свое имя в заголовке
+		// возможность выбрать аватарку - сделать анимации на каждые 10% здоровья + при хиле
+		// сделать возможность пригласить друга в игру
+		// записывать по желанию счет + ник в облачную бд
+		// выводить топ участников
+		// описать проект на странице Об игре
+		// 
+		// адаптивная верстка
+		// анимация
+		// иллюстрации
+		// эффекты
+
+		// выкатить в портфолио
   	}
   }
 }
 
+const gameCONFIG = {
+
+};
+
+function getOtherPlayer(currentPlayer) {
+	return currentPlayer == 'monster' ? 'player' : 'monster';
+}
+
+// соблюдает лимиты значений от 0 до 100
+function getValidAction(currentVal, actionVal) {
+	return currentVal + actionVal > 100 ? 100 :
+				currentVal + actionVal < 0 ? 0 :
+					currentVal + actionVal;
+}
+
 // рандомная генерация атак/лечения
-function generateRandom(min = 1, max = 5) {
-	console.log(min, max);
-	return Math.floor(Math.random() * (max - min) + min);
+function* generateRandom(min = 1, max = 5) {
+	while(true) {
+		yield Math.floor(Math.random() * (max - min + 1) + min); // от min до max включительно
+	}
 }
 	
 </script>
