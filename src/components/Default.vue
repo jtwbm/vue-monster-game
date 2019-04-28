@@ -1,7 +1,9 @@
 <template>
 	<div>
 		<div class="gameActions">
-			<p class="gameActions__player">Игрок атаковал монстра обычным ударом: -3HP</p>
+			<ul class="gameActions__player">
+				<li v-for="(log, index) in log.player">{{ log }}</li>
+			</ul>
 			<p class="gameActions__monster">Монстр применил комбо: -12HP</p>
 		</div>
   		<div class="players">
@@ -12,10 +14,10 @@
 
 		    	<div class="actions">
 		    		<div class="actions__title">Атаки</div>
-					<button class="button default-color" @click="gameAction('default')">Обычный удар</button>
-					<button class="button combo-color" @click="gameAction('combo')">Комбо</button>
-					<button class="button magic-color" @click="gameAction('magic')">Заклинание</button>
-					<button class="button heal-color" @click="gameAction('heal', 'player')">+20HP</button>
+					<button class="button default-color" @click="action()">Обычный удар</button>
+					<button class="button combo-color" @click="action('combo')">Комбо</button>
+					<button class="button magic-color" @click="action('magic')">Заклинание</button>
+					<button class="button heal-color" @click="action('heal', 'player')">+20HP</button>
 				</div>
 		    </div>
 		    <div class="player">
@@ -34,10 +36,10 @@ export default {
   data () {
     return {
     	attacks: {
-    		default: generateRandom(-4,-1),
-    		combo: generateRandom(-10,-5),
-    		magic: generateRandom(-14,-10),
-    		heal: generateRandom(4,12)
+    		default: generateRandom(-4, -1),
+    		combo: generateRandom(-10, -5),
+    		magic: generateRandom(-14, -10),
+    		heal: generateRandom(4, 12)
     	},
       	player: {
 	      	hp: 100,
@@ -47,32 +49,18 @@ export default {
       	monster: {
 	      	hp: 100,
       	},
-      	info: {
-      		winner: null
+      	log: {
+      		player: [],
+      		monster: []
       	}
     }
   },
-  computed: {
-
-  },
   methods: {
-  	// атака / лечение указанного персонажа
-  	gameAction(variant = 'default', player = 'monster') {
-  		let newAction = this.attacks[variant].next().value;
-
-		if(variant == 'default' || variant == 'combo') {
-			this[player].hp = getValidAction(this[player].hp, newAction);
-		}
-
-		if(variant == 'magic' && this[getOtherPlayer(player)].mp >= 44) { // атака magic отнимает 44 маны:
-			this[getOtherPlayer(player)].mp -= 44; 
-		}
-		if(variant == 'heal' && this[player].mp >= 39) { // heal отнимает 39 маны:
-			this[player].mp -= 39; 
-		}
-
-		// ответная атака монстра
-		// this.player.hp = getValidAction(this.player.hp, -4);
+  	action(actionName = 'default', who = 'monster') {
+  		let attack = this.attacks[actionName].next().value;
+  		this[who].hp = getValidAction(this[who].hp, attack);
+  		this.log[getOtherPlayer(who)].unshift(`${ getOtherPlayer(who) } нанес удар ${ who }: ${ attack }`);
+  		this.log[getOtherPlayer(who)] = this.log[getOtherPlayer(who)].slice(0, 3);
   	}
   }
 }
