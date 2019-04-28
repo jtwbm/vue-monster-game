@@ -26,21 +26,21 @@ npm run build
 ## Основные условия (ТЗ)
 - ![check](https://github.com/jtwbm/vue-monster-game/blob/master/static/check.png) Есть несколько вариантов действий: обычная атака, комбо, заклинание, лечение
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После каждой атаки монстр генерирует случайную атаку на игрока
-- Игра закончена, если у кого-либо HP === 0. Подсчет ведется за 1 раунд (ход игрока, ход монстра). Т. е. если в конце раунда у обеих сторон здоровье на нуле -- получается ничья
-- Магические атаки и лечение происходят за счет маны. Если ее не хватает, то атака не может быть выполнена.
-- Мана восстанавливается по 10 ед. за ход
-- После комбо-атаки ею нельзя пользоваться следующие 2 хода
-- N последних действий игрока и монстра вносятся в историю событий и выводится на экран
-- После окончания игры дать возможность пройти ее снова
-- Адаптивная верстка
-- Анимировать и застилизовать эффекты и приложение в целом
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Игра закончена, если у кого-либо HP === 0. Подсчет ведется за 1 раунд (ход игрока, ход монстра). Т. е. если в конце раунда у обеих сторон здоровье на нуле -- получается ничья
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Магические атаки и лечение происходят за счет маны. Если ее не хватает, то атака не может быть выполнена.
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Мана восстанавливается по 10 ед. за ход
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После комбо-атаки ею нельзя пользоваться следующие 2 хода
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) N последних действий игрока и монстра вносятся в историю событий и выводится на экран
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После окончания игры дать возможность пройти ее снова
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Адаптивная верстка
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Анимировать и застилизовать эффекты и приложение в целом
 
 ## Дополнительные условия (хорошо бы сделать)
-- 2 режима игры: однопользовательский и многопользовательский
-- Создать простую логику атак монстра: максимально эффективная атака в приоритете + если здоровье на низком уровне -- монстр будет лечиться, если хватает маны
-- Создать разные уровни сложности
-- Сделать возможность ввести игроку свое имя
-- Русская и английская версии
-- Нарисовать и анимировать несколько монстров и игрока (мужчина/женщина) с анимацией на каждые 10% HP
-- Записывать в БД счет игрока (по желанию)
-- Выводить ТОП участников
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) 2 режима игры: однопользовательский и многопользовательский
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Создать простую логику атак монстра: максимально эффективная атака в приоритете + если здоровье на низком уровне -- монстр будет лечиться, если хватает маны
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Создать разные уровни сложности
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Сделать возможность ввести игроку свое имя
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Русская и английская версии
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Нарисовать и анимировать несколько монстров и игрока (мужчина/женщина) с анимацией на каждые 10% HP
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Записывать в БД счет игрока (по желанию)
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Выводить ТОП участников
