@@ -1,12 +1,10 @@
 {
   "name": "monster-game",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "A Vue.js game",
   "author": "jtwbm <jukaenerdjaizer@gmail.com>",
-  "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --open",
     "build": "node build/build.js"
   },
   "dependencies": {

@@ -1,32 +1,31 @@
 <template>
 	<div>
-		<div class="gameActions">
-			<ul class="gameActions__player">
-				<li v-for="(log, index) in log.player">{{ log }}</li>
-			</ul>
-			<p class="gameActions__monster">Монстр применил комбо: -12HP</p>
-		</div>
   		<div class="players">
+  			<div v-if="winner === 'both'">Ничья!</div>
 		    <div class="player">
+		    	<div v-if="winner === 'player'">Победитель</div>
 		    	<div class="player__name">You</div>
 		    	<div class="player__line"><div class="player__hp" :style="{ width: player.hp + '%' }"></div><span>Здоровье</span></div>
 		    	<div class="player__line"><div class="player__mp" :style="{ width: player.mp + '%' }"></div><span>Мана</span></div>
 
-		    	<div class="actions">
+		    	<div class="actions" v-if="winner === null">
 		    		<div class="actions__title">Атаки</div>
 					<button class="button default-color" @click="action()">Обычный удар</button>
 					<button class="button combo-color" @click="action('combo')">Комбо</button>
 					<button class="button magic-color" @click="action('magic')">Заклинание</button>
-					<button class="button heal-color" @click="action('heal', 'player')">+20HP</button>
+					<button class="button heal-color" @click="action('heal', 'player')">Лечение</button>
 				</div>
 		    </div>
 		    <div class="player">
+		    	<div v-if="winner === 'monster'">Победитель</div>
 		    	<div class="player__name">Monster</div>
 		    	<div class="player__line"><div class="player__hp" :style="{ width: monster.hp + '%' }"></div><span>Здоровье</span></div>
 		    	<!-- <div class="player__line"><div class="player__mp" :style="{ width: monster.mp + '%' }"></div><span>Мана</span></div> -->
 		    </div>
 		</div>
-		
+		<ul class="gameActions">
+			<li v-for="(log, index) in log"><span :class="log.who">{{ log.value }}</span></li>
+		</ul>
   </div>
 </template>
 
@@ -35,6 +34,7 @@ export default {
   name: 'Default',
   data () {
     return {
+    	winner: null,
     	attacks: {
     		default: generateRandom(-4, -1),
     		combo: generateRandom(-10, -5),
@@ -43,31 +43,53 @@ export default {
     	},
       	player: {
 	      	hp: 100,
-	      	mp: 100,
-
+	      	mp: 100
       	},
       	monster: {
-	      	hp: 100,
+	      	hp: 100
       	},
-      	log: {
-      		player: [],
-      		monster: []
-      	}
+      	log: []
     }
   },
   methods: {
   	action(actionName = 'default', who = 'monster') {
-  		let attack = this.attacks[actionName].next().value;
+  		let attack = this.attacks[actionName].next().value,
+  			logValue;
   		this[who].hp = getValidAction(this[who].hp, attack);
-  		this.log[getOtherPlayer(who)].unshift(`${ getOtherPlayer(who) } нанес удар ${ who }: ${ attack }`);
-  		this.log[getOtherPlayer(who)] = this.log[getOtherPlayer(who)].slice(0, 3);
+
+  		if(actionName === 'heal') {
+  			logValue = {
+	  			who: who,
+	  			value: `${ who } произнес заклинание лечения: +${ attack }HP`
+	  		};
+  		} else {
+  			logValue = {
+	  			who: getOtherPlayer(who),
+  				value: `${ getOtherPlayer(who) } нанес удар ${ who }: ${ attack }HP`
+	  		};
+  		}
+  		this.log.unshift(logValue);
+  		this.log = this.log.slice(0, 3);
+
+  		// monster attack
+		this.player.hp = getValidAction(this.player.hp, -5);
+		this.log.unshift({
+			who: 'monster',
+			value: `monster нанес удар player: -5HP`
+  		});
+  		this.log = this.log.slice(0, 3);
+
+  		// isWin?
+  		if(this.player.hp <= 0 && this.monster.hp <= 0) {
+  			this.winner = 'both';
+  		} else if(this.player.hp > 0 && this.monster.hp <= 0) {
+  			this.winner = 'player';
+  		} else if(this.player.hp <= 0 && this.monster.hp > 0) {
+  			this.winner = 'monster';
+  		}
   	}
   }
 }
-
-const gameCONFIG = {
-
-};
 
 function getOtherPlayer(currentPlayer) {
 	return currentPlayer == 'monster' ? 'player' : 'monster';
@@ -200,7 +222,12 @@ function* generateRandom(min = 1, max = 5) {
 .gameActions {
 	text-align: center;
 	margin: 3rem auto;
+	list-style: none;
+	padding: 0;
 
+	&:empty {
+		display: none;
+	}
 	p {
 		margin: 0 0 1rem;
 
@@ -208,10 +235,10 @@ function* generateRandom(min = 1, max = 5) {
 			display: none;
 		}
 	}
-	&__player {
+	.player {
 		color: green;
 	}
-	&__monster {
+	.monster {
 		color: red;
 	}
 }

@@ -8,12 +8,24 @@
 $ git clone https://github.com/jtwbm/vue-monster-game.git
 # Переходим в папку проекта
 $ cd vue-monster-game
+```
+Если вы используете NPM:
+```sh
 # Устанавливаем зависимости
 $ npm install
 # Запуск проекта в режиме разработки (по умолчанию localhost:8080)
 $ npm run dev
 # Минифицированная продакшн-версия
-npm run build
+$ npm run build
+```
+Если вы используете Yarn:
+```sh
+# Устанавливаем зависимости
+$ yarn install
+# Запуск проекта в режиме разработки (по умолчанию localhost:8080)
+$ yarn run dev
+# Минифицированная продакшн-версия
+$ yarn run build
 ```
 
 ## О проекте
@@ -34,6 +46,7 @@ npm run build
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После окончания игры дать возможность пройти ее снова
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Адаптивная верстка
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Анимировать и застилизовать эффекты и приложение в целом
+- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Вывести README на страницу About
 
 ## Дополнительные условия (хорошо бы сделать)
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) 2 режима игры: однопользовательский и многопользовательский
