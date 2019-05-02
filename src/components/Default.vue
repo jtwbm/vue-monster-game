@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<endgame :winner="winner" v-if="endgame"></endgame>
+		<endgame :winner="winner" v-if="endgame" @finishGame="resetGame()"></endgame>
 		<template v-else>
 			<div class="players">
 	  			<div v-if="winner === 'both'">Ничья!</div>
@@ -41,25 +41,7 @@ export default {
   	endgame: End
   },
   data () {
-    return {
-    	endgame: false,
-    	winner: null,
-    	attacks: {
-    		// настройки атак по умолчанию
-    		default: generateRandom(-4, -1),
-    		combo: generateRandom(-10, -5),
-    		magic: generateRandom(-14, -10),
-    		heal: generateRandom(4, 12)
-    	},
-      	player: {
-	      	hp: 100,
-	      	mp: 100
-      	},
-      	monster: {
-	      	hp: 100
-      	},
-      	log: []
-    }
+    return gameConfig()
   },
   methods: {
   	gameRound(actionName = 'default', purpose = 'monster') {
@@ -88,6 +70,15 @@ export default {
   			this.winner = 'monster';
   			this.endgame = true;
   		}
+  	},
+  	resetGame() {
+  		// обнулить данные, начать игру сначала
+  		let config = gameConfig(),
+  			dataKeys = Object.keys(config);
+  		
+  		dataKeys.map(el => {
+  			this[el] = config[el];
+  		});
   	},
   	_attack(actionName = 'default', purpose = 'monster') {
   		let damage = this.attacks[actionName].next().value;
@@ -134,6 +125,28 @@ export default {
   	// инициализация рандомных атак монстра
   	this._monsterAttack = generateRandom(0,3);
   }
+}
+
+function gameConfig() {
+	return {
+		endgame: false,
+    	winner: null,
+    	attacks: {
+    		// настройки атак по умолчанию
+    		default: generateRandom(-4, -1),
+    		combo: generateRandom(-10, -5),
+    		magic: generateRandom(-14, -10),
+    		heal: generateRandom(4, 12)
+    	},
+      	player: {
+	      	hp: 100,
+	      	mp: 100
+      	},
+      	monster: {
+	      	hp: 100
+      	},
+      	log: []
+	}
 }
 
 // соблюдает лимиты значений от 0 до 100
@@ -219,12 +232,17 @@ function* generateRandom(min = 1, max = 5) {
 	}
 }
 .button {
+	display: inline-block;
+	vertical-align: middle;
 	cursor: pointer;
 	color: #fff;
 	border: none;
 	font-size: 1.4rem;
 	transition: all .3s;
-	padding: 1rem;
+	text-decoration: none;
+	line-height: 4rem;
+	padding: 0 2rem;
+	height: 4rem;
 
 	&:focus {
 		outline: none;

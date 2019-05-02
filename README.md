@@ -43,7 +43,7 @@ $ yarn run build
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Мана восстанавливается по 10 ед. за ход
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После комбо-атаки ею нельзя пользоваться следующие 2 хода
 - ![check](https://github.com/jtwbm/vue-monster-game/blob/master/static/check.png) N последних действий игрока и монстра вносятся в историю событий и выводится на экран
-- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После окончания игры дать возможность пройти ее снова
+- ![check](https://github.com/jtwbm/vue-monster-game/blob/master/static/check.png) После окончания игры дать возможность пройти ее снова
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Адаптивная верстка
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Анимировать и застилизовать эффекты и приложение в целом
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Вывести README на страницу About
