@@ -37,7 +37,7 @@ $ yarn run build
 
 ## Основные условия (ТЗ)
 - ![check](https://github.com/jtwbm/vue-monster-game/blob/master/static/check.png) Есть несколько вариантов действий: обычная атака, комбо, заклинание, лечение
-- ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) После каждой атаки монстр генерирует случайную атаку на игрока
+- ![check](https://github.com/jtwbm/vue-monster-game/blob/master/static/check.png) После каждой атаки монстр генерирует случайную атаку на игрока
 - ![check](https://github.com/jtwbm/vue-monster-game/blob/master/static/check.png) Игра закончена, если у кого-либо HP === 0. Подсчет ведется за 1 раунд (ход игрока, ход монстра). Т. е. если в конце раунда у обеих сторон здоровье на нуле -- получается ничья
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Магические атаки и лечение происходят за счет маны. Если ее не хватает, то атака не может быть выполнена.
 - ![uncheck](https://github.com/jtwbm/vue-monster-game/blob/master/static/no.png) Мана восстанавливается по 10 ед. за ход

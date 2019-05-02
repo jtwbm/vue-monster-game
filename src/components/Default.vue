@@ -1,41 +1,51 @@
 <template>
 	<div>
-  		<div class="players">
-  			<div v-if="winner === 'both'">Ничья!</div>
-		    <div class="player">
-		    	<div v-if="winner === 'player'">Победитель</div>
-		    	<div class="player__name">You</div>
-		    	<div class="player__line"><div class="player__hp" :style="{ width: player.hp + '%' }"></div><span>Здоровье</span></div>
-		    	<div class="player__line"><div class="player__mp" :style="{ width: player.mp + '%' }"></div><span>Мана</span></div>
+		<endgame :winner="winner" v-if="endgame"></endgame>
+		<template v-else>
+			<div class="players">
+	  			<div v-if="winner === 'both'">Ничья!</div>
+			    <div class="player">
+			    	<div v-if="winner === 'player'">Победитель</div>
+			    	<div class="player__name">You</div>
+			    	<div class="player__line"><div class="player__hp" :style="{ width: player.hp + '%' }"></div><span>Здоровье</span></div>
+			    	<div class="player__line"><div class="player__mp" :style="{ width: player.mp + '%' }"></div><span>Мана</span></div>
 
-		    	<div class="actions" v-if="winner === null">
-		    		<div class="actions__title">Атаки</div>
-					<button class="button default-color" @click="action()">Обычный удар</button>
-					<button class="button combo-color" @click="action('combo')">Комбо</button>
-					<button class="button magic-color" @click="action('magic')">Заклинание</button>
-					<button class="button heal-color" @click="action('heal', 'player')">Лечение</button>
-				</div>
-		    </div>
-		    <div class="player">
-		    	<div v-if="winner === 'monster'">Победитель</div>
-		    	<div class="player__name">Monster</div>
-		    	<div class="player__line"><div class="player__hp" :style="{ width: monster.hp + '%' }"></div><span>Здоровье</span></div>
-		    	<!-- <div class="player__line"><div class="player__mp" :style="{ width: monster.mp + '%' }"></div><span>Мана</span></div> -->
-		    </div>
-		</div>
-		<ul class="gameActions">
-			<li v-for="(log, index) in log"><span :class="log.who">{{ log.value }}</span></li>
-		</ul>
+			    	<div class="actions" v-if="winner === null">
+			    		<div class="actions__title">Атаки</div>
+						<button class="button default-color" @click="gameRound()">Обычный удар</button>
+						<button class="button combo-color" @click="gameRound('combo')">Комбо</button>
+						<button class="button magic-color" @click="gameRound('magic')">Заклинание</button>
+						<button class="button heal-color" @click="gameRound('heal', 'player')">Лечение</button>
+					</div>
+			    </div>
+			    <div class="player">
+			    	<div v-if="winner === 'monster'">Победитель</div>
+			    	<div class="player__name">Monster</div>
+			    	<div class="player__line"><div class="player__hp" :style="{ width: monster.hp + '%' }"></div><span>Здоровье</span></div>
+			    	<!-- <div class="player__line"><div class="player__mp" :style="{ width: monster.mp + '%' }"></div><span>Мана</span></div> -->
+			    </div>
+			</div>
+			<ul class="gameActions">
+				<li v-for="item in log"><span :class="log.who">{{ item.value }}</span></li>
+			</ul>
+		</template>
   </div>
 </template>
 
 <script>
+import End from '@/components/End.vue'; // Экран окончания игры
+
 export default {
   name: 'Default',
+  components: {
+  	endgame: End
+  },
   data () {
     return {
+    	endgame: false,
     	winner: null,
     	attacks: {
+    		// настройки атак по умолчанию
     		default: generateRandom(-4, -1),
     		combo: generateRandom(-10, -5),
     		magic: generateRandom(-14, -10),
@@ -52,47 +62,78 @@ export default {
     }
   },
   methods: {
-  	action(actionName = 'default', who = 'monster') {
-  		let attack = this.attacks[actionName].next().value,
-  			logValue;
-  		this[who].hp = getValidAction(this[who].hp, attack);
+  	gameRound(actionName = 'default', purpose = 'monster') {
+  		// actionName - название атаки/заклинания
+  		// purpose - на кого направлена атака/заклинание
 
-  		if(actionName === 'heal') {
-  			logValue = {
-	  			who: who,
-	  			value: `${ who } произнес заклинание лечения: +${ attack }HP`
-	  		};
-  		} else {
-  			logValue = {
-	  			who: getOtherPlayer(who),
-  				value: `${ getOtherPlayer(who) } нанес удар ${ who }: ${ attack }HP`
-	  		};
-  		}
-  		this.log.unshift(logValue);
-  		this.log = this.log.slice(0, 3);
+  		// атака игрока
+  		this._attack(actionName, purpose);
 
-  		// monster attack
-		this.player.hp = getValidAction(this.player.hp, -5);
-		this.log.unshift({
-			who: 'monster',
-			value: `monster нанес удар player: -5HP`
-  		});
-  		this.log = this.log.slice(0, 3);
+  		// атака монстра
+  		let monsterAttack = this._randomAttack();
+  		this._attack(monsterAttack, monsterAttack === 'heal' ? 'monster' : 'player');
 
-  		// isWin?
+  		// проверка, есть ли победитель/проигравший/ничья
+  		this.endRound(); 
+  	},
+  	endRound() {
+  		// есть ли победитель
   		if(this.player.hp <= 0 && this.monster.hp <= 0) {
   			this.winner = 'both';
+  			this.endgame = true;
   		} else if(this.player.hp > 0 && this.monster.hp <= 0) {
   			this.winner = 'player';
+  			this.endgame = true;
   		} else if(this.player.hp <= 0 && this.monster.hp > 0) {
   			this.winner = 'monster';
+  			this.endgame = true;
   		}
-  	}
-  }
-}
+  	},
+  	_attack(actionName = 'default', purpose = 'monster') {
+  		let damage = this.attacks[actionName].next().value;
+  		this[purpose].hp = getValidAction(this[purpose].hp, damage);
+  		// записать в лог действие
+  		this._logAction(purpose, damage, actionName);
+  	},
+  	_logAction(purpose = 'monster', damage, attackName = 'default') {
+  		let attackText = '',
+  			person = attackName === 'heal' ? purpose : this._getOtherPlayer(purpose);
 
-function getOtherPlayer(currentPlayer) {
-	return currentPlayer == 'monster' ? 'player' : 'monster';
+  		switch (attackName) {
+  			case 'combo':
+  				attackText = 'нанес комбо-удар:';
+  				break;
+  			case 'magic':
+  				attackText = 'произнес боевое заклинание:';
+  				break;
+  			case 'heal':
+  				attackText = 'произнес заклинание лечения:';
+  				break;
+  			default:
+  				attackText = 'нанес урон обычным ударом:';
+  		}
+
+  		// добавляем в начало лога новое действие персонажа
+  		this.log.unshift({
+  			who: person,
+  			value: `${ person } ${ attackText } ${ damage > 0 ? '+' + damage : damage }HP`
+  		});
+
+  		// оставить только последние 3 действия в истории
+  		this.log = this.log.slice(0, 3);
+  	},
+  	_getOtherPlayer(currentPlayer) {
+		return currentPlayer == 'monster' ? 'player' : 'monster';
+	},
+	_randomAttack() {
+		// генерация рандомной атаки у монстра: default, combo, magic или heal
+		return Object.keys(this.attacks)[this._monsterAttack.next().value];
+	}
+  },
+  mounted() {
+  	// инициализация рандомных атак монстра
+  	this._monsterAttack = generateRandom(0,3);
+  }
 }
 
 // соблюдает лимиты значений от 0 до 100
@@ -108,7 +149,6 @@ function* generateRandom(min = 1, max = 5) {
 		yield Math.floor(Math.random() * (max - min + 1) + min); // от min до max включительно
 	}
 }
-	
 </script>
 
 <style lang="scss">
