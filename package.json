@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "A Vue.js game",
   "author": "jtwbm <jukaenerdjaizer@gmail.com>",
+  "license": "ISC",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --open",
     "build": "node build/build.js"
   },
   "dependencies": {
+    "markdown-to-vue-loader": "^1.0.1",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

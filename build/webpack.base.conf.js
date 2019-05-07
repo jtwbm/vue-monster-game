@@ -32,6 +32,20 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.md$/,
+        exclude: /(node_modules|bower_components)/,
+        use: [
+          'vue-loader',
+          {
+            loader: 'markdown-to-vue-loader',
+            options: {
+              componentNamespace: 'markdown-component',
+              exportSource: true
+            },
+          },
+        ],
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig

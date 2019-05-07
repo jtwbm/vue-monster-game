@@ -12,7 +12,6 @@
 
 <script>
 export default {
-  name: 'Endgame',
   props: {
   	winner: {
   		required: true
