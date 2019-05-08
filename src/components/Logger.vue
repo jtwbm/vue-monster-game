@@ -9,8 +9,11 @@
 <script>
 export default {
   data () {
-    return {
-    	log: []
+    return {}
+  },
+  computed: {
+    log() {
+      return this.$store.getters.getLog;
     }
   },
   methods: {

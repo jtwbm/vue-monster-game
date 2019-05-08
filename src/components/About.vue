@@ -1,5 +1,6 @@
 <template>
   <div>
+  	<h2>About component</h2>
   </div>
 </template>
 
@@ -7,7 +8,7 @@
 export default {
   data () {
     return {
-      msg: 'about component'
+      
     }
   }
 }

@@ -25,9 +25,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data () {
-	return gameConfig()
+	return {}
+  },
+  computed: {
+  	...mapGetters({
+      endgame: 'getEndgame',
+      winner: 'getWinner',
+      player: 'getPlayer',
+      monster: 'getMonster'
+    })
   },
   methods: {
   	gameRound(actionName = 'default', purpose = 'monster') {
@@ -38,8 +48,8 @@ export default {
   		this._attack(actionName, purpose);
 
   		// атака монстра
-  		let monsterAttack = this._randomAttack();
-  		this._attack(monsterAttack, monsterAttack === 'heal' ? 'monster' : 'player');
+  		// let monsterAttack = this._attack('default', 'player');
+  		// this._attack(monsterAttack, monsterAttack === 'heal' ? 'monster' : 'player');
 
   		// проверка, есть ли победитель/проигравший/ничья
   		this.endRound(); 
@@ -57,61 +67,25 @@ export default {
   			this.endgame = true;
   		}
   	},
-  	resetGame() {
-  		// обнулить данные, начать игру сначала
-  		let config = gameConfig(),
-  			dataKeys = Object.keys(config);
-  		
-  		dataKeys.map(el => {
-  			this[el] = config[el];
-  		});
-  	},
   	_attack(actionName = 'default', purpose = 'monster') {
-  		let damage = this.attacks[actionName].next().value;
-  		this[purpose].hp = getValidAction(this[purpose].hp, damage);
+  		// let damage = this.attacks[actionName].next().value;
+  		let attackName = 'get' + actionName[0].toUpperCase() + actionName.slice(1) + 'Attack';
+  		let damage = this.$store.getters[attackName].next().value;
+
+  		this.$store.commit('setHP', {purpose: purpose, damage: damage});
+
+  		// console.log(attackName);
+
   		// записать в лог действие
   		// this._logAction(purpose, damage, actionName);
   	},
-	_randomAttack() {
-		// генерация рандомной атаки у монстра: default, combo, magic или heal
-		return Object.keys(this.attacks)[this._monsterAttack.next().value];
-	}
-  },
-  mounted() {
-  	// инициализация рандомных атак монстра
-  	this._monsterAttack = generateRandom(0,3);
+	// _randomAttack() {
+	// 	// генерация рандомной атаки у монстра: default, combo, magic или heal
+	// 	return Object.keys(this.attacks)[this._monsterAttack.next().value];
+	// }
   }
 }
 
-function gameConfig() {
-	return {
-		endgame: false,
-    	winner: null,
-    	attacks: {
-    		// настройки атак по умолчанию
-    		default: generateRandom(-4, -1),
-    		combo: generateRandom(-10, -5),
-    		magic: generateRandom(-14, -10),
-    		heal: generateRandom(4, 12)
-    	},
-      	player: {
-	      	hp: 100,
-	      	mp: 100
-      	},
-      	monster: {
-	      	hp: 100
-      	}
-	}
-}
-
-// соблюдает лимиты значений от 0 до 100
-function getValidAction(currentVal, actionVal) {
-	return currentVal + actionVal > 100 ? 100 :
-				currentVal + actionVal < 0 ? 0 :
-					currentVal + actionVal;
-}
-
-// рандомная генерация атак/лечения
 function* generateRandom(min = 1, max = 5) {
 	while(true) {
 		yield Math.floor(Math.random() * (max - min + 1) + min); // от min до max включительно
@@ -184,52 +158,6 @@ function* generateRandom(min = 1, max = 5) {
 		color: #333;
 		margin-bottom: 1rem;
 		flex-basis: 100%;
-	}
-}
-.button {
-	display: inline-block;
-	vertical-align: middle;
-	cursor: pointer;
-	color: #fff;
-	border: none;
-	font-size: 1.4rem;
-	transition: all .3s;
-	text-decoration: none;
-	line-height: 4rem;
-	padding: 0 2rem;
-	height: 4rem;
-
-	&:focus {
-		outline: none;
-		box-shadow: inset 0 0 .5rem 0 rgba(0,0,0,.3);
-	}
-	&.default-color {
-		background-color: #ffaa0a;
-
-		&:hover {
-			background-color: #ffaa0a + #111;
-		}
-	}
-	&.combo-color {
-		background-color: #ff0a0a;
-
-		&:hover {
-			background-color: #ff0a0a + #111;
-		}
-	}
-	&.magic-color {
-		background-color: #c029e4;
-
-		&:hover {
-			background-color: #c029e4 + #111;
-		}
-	}
-	&.heal-color {
-		background-color: #1bd488;
-
-		&:hover {
-			background-color: #1bd488 + #111;
-		}
 	}
 }
 </style>

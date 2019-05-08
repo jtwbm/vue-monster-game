@@ -1,6 +1,6 @@
 <template>
   <div class="finishGame">
-  	<hgroup v-if="this.winner !== null">
+  	<hgroup v-if="winner !== null">
   		<h4>Игра окончена!</h4>
   		<h5>{{ finishText }}</h5>
   	</hgroup>
@@ -12,15 +12,13 @@
 
 <script>
 export default {
-  props: {
-  	winner: {
-  		required: true
-  	}
-  },
   data () {
     return {}
   },
   computed: {
+    winner() {
+      return this.$store.getters.getWinner;
+    },
   	finishText() {
   		let text = this.winner === null ? 'Победитель не определен' :
   								this.winner === 'both' ? 'Ничья'
@@ -30,7 +28,7 @@ export default {
   },
   methods: {
   	finishGame() {
-      this.$emit('finishGame');
+      this.$store.commit('reset');
   	}
   }
 }
