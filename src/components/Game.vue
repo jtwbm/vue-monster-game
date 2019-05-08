@@ -57,14 +57,14 @@ export default {
   	endRound() {
   		// есть ли победитель
   		if(this.player.hp <= 0 && this.monster.hp <= 0) {
-  			this.winner = 'both';
-  			this.endgame = true;
+  			this.$store.commit('setWinner', 'both');
+  			this.$store.commit('setEndgame', true);
   		} else if(this.player.hp > 0 && this.monster.hp <= 0) {
-  			this.winner = 'player';
-  			this.endgame = true;
+  			this.$store.commit('setWinner', 'player');
+  			this.$store.commit('setEndgame', true);
   		} else if(this.player.hp <= 0 && this.monster.hp > 0) {
-  			this.winner = 'monster';
-  			this.endgame = true;
+  			this.$store.commit('setWinner', 'monster');
+  			this.$store.commit('setEndgame', true);
   		}
   	},
   	_attack(actionName = 'default', purpose = 'monster') {
